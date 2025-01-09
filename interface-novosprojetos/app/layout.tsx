@@ -5,7 +5,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
   title: "Proposta de Cursos | Unyleya",
-  description: "'Interface de apresentação proposta cursos para o Comitê 2025'",
+  description: "Interface de apresentação proposta cursos para o Comitê 2025",
 }
 
 export default function RootLayout({

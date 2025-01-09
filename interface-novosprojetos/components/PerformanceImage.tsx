@@ -1,8 +1,8 @@
-"'use client'"
+"use client"
 
-import { useState } from "'react'"
-import Image from "'next/image'"
-import styles from "'@/styles/Home.module.css'"
+import { useState } from "react"
+import Image from "next/image"
+import styles from "@/styles/Home.module.css"
 
 interface PerformanceImageProps {
   imageUrl: string
@@ -18,7 +18,7 @@ export default function PerformanceImage({ imageUrl }: PerformanceImageProps) {
   }
 
   const handleError = () => {
-    setError("'Erro ao carregar a imagem de performance'")
+    setError("Erro ao carregar a imagem de performance")
     setIsLoading(false)
   }
 
@@ -45,7 +45,7 @@ export default function PerformanceImage({ imageUrl }: PerformanceImageProps) {
         height={900}
         layout="responsive"
         objectFit="contain"
-        style={{ maxHeight: "'70vh'", width: "'100%'" }}
+        style={{ maxHeight: "70vh", width: "100%" }}
         onLoad={handleImageLoad}
         onError={handleError}
         onClick={() => setIsFullscreen(true)}

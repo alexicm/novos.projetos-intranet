@@ -1,10 +1,10 @@
-"'use client'"
+"use client"
 
-import { useState } from "'react'"
-import { Course } from "'@/lib/types'"
+import { useState } from "react"
+import { Course } from "@/lib/types"
 
 export default function CourseSelector({ courses }: { courses: Record<string, Course> }) {
-  const [selectedCourse, setSelectedCourse] = useState("''")
+  const [selectedCourse, setSelectedCourse] = useState("")
 
   const handleCourseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCourse(e.target.value)

@@ -1,7 +1,7 @@
-"'use client'"
+"use client"
 
-import { useState, useEffect } from "'react'"
-import styles from "'./VideoPlayer.module.css'"
+import { useState, useEffect } from "react"
+import styles from "./VideoPlayer.module.css"
 
 interface VideoPlayerProps {
   videoUrl: string
@@ -21,7 +21,7 @@ export default function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   }
 
   const handleError = () => {
-    setError("'Erro ao carregar o vídeo'")
+    setError("Erro ao carregar o vídeo")
     setIsLoading(false)
   }
 

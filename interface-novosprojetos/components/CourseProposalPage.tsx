@@ -1,14 +1,14 @@
-"'use client'"
+"use client"
 
-import { useState, useEffect, useRef } from "'react'"
-import { useRouter } from "'next/navigation'"
-import VideoPlayer from "'@/components/VideoPlayer/VideoPlayer'"
-import PerformanceImage from "'@/components/PerformanceImage'"
-import Sidebar from "'@/components/Sidebar'"
-import styles from "'@/styles/Home.module.css'"
-import Image from "'next/image'"
-import { motion, AnimatePresence } from "'framer-motion'"
-import { Course } from "'@/lib/types'"
+import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer"
+import PerformanceImage from "@/components/PerformanceImage"
+import Sidebar from "@/components/Sidebar"
+import styles from "@/styles/Home.module.css"
+import Image from "next/image"
+import { motion, AnimatePresence } from "framer-motion"
+import { Course } from "@/lib/types"
 
 interface CourseProposalPageProps {
   onReturnToLanding: () => void;
@@ -20,15 +20,15 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("''")
+  const [searchTerm, setSearchTerm] = useState("")
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   const getCurrentMonth = () => {
     const months = [
-      "'Janeiro'", "'Fevereiro'", "'Março'", "'Abril'", "'Maio'", "'Junho'",
-      "'Julho'", "'Agosto'", "'Setembro'", "'Outubro'", "'Novembro'", "'Dezembro'"
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
     return months[new Date().getMonth()];
   };
@@ -50,9 +50,9 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
       }
     };
 
-    document.addEventListener("'mousedown'", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("'mousedown'", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -60,16 +60,16 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
     setIsLoading(true)
     setError(null)
     try {
-      const response = await fetch("'/api/courses'")
+      const response = await fetch("/api/courses")
       if (!response.ok) {
-        throw new Error("'Failed to fetch courses'")
+        throw new Error("Failed to fetch courses")
       }
       const data = await response.json()
       setCourses(data)
       setIsLoading(false)
     } catch (err) {
-      console.error("'Error loading courses:'", err)
-      setError("'Error loading courses. Please try again.'")
+      console.error("Error loading courses:", err)
+      setError("Error loading courses. Please try again.")
       setIsLoading(false)
     }
   }
@@ -77,7 +77,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
   const loadCourseDetails = (courseKey: string) => {
     const course = courses[courseKey];
     if (!course) {
-      console.error("'Course not found:'", courseKey);
+      console.error("Course not found:", courseKey);
       return;
     }
 
@@ -100,13 +100,13 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
     // Update minibios
     const minibiosContainer = document.getElementById("coordenadorMinibios");
     if (minibiosContainer) {
-      let minibiosContent = "''";
+      let minibiosContent = "";
       
       // Add main coordinator first
       minibiosContent += `
         <div class="mb-4">
           <h4 class="font-bold">${course.coordenadorPrincipal} (Coordenador Principal/Solicitante)</h4>
-          <p>${course.minibiosCoordenadores[course.coordenadorPrincipal] || "'Minibio não disponível'"}</p>
+          <p>${course.minibiosCoordenadores[course.coordenadorPrincipal] || "Minibio não disponível"}</p>
         </div>
       `;
 
@@ -115,7 +115,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
         minibiosContent += `
           <div class="mb-4">
             <h4 class="font-bold">${coord}</h4>
-            <p>${course.minibiosCoordenadores[coord] || "'Minibio não disponível'"}</p>
+            <p>${course.minibiosCoordenadores[coord] || "Minibio não disponível"}</p>
           </div>
         `;
       });
@@ -144,7 +144,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
   const handleLogoClick = () => {
     setSelectedCourse(null)
     setIsSidebarOpen(false)
-    router.push("'/'")
+    router.push("/")
   }
 
   const handleSidebarToggle = () => {
@@ -162,7 +162,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
 
   const handleSelectCourse = (courseKey: string) => {
     setSelectedCourse(courseKey)
-    setSearchTerm("''")
+    setSearchTerm("")
     setIsDropdownOpen(false)
   }
 
@@ -197,7 +197,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
         <div className={`${styles.headerContent} responsive-container`}>
           <button
             onClick={handleSidebarToggle}
-            className={`${styles.sidebarButton} ${isLoading ? styles.loading : "''"}`}
+            className={`${styles.sidebarButton} ${isLoading ? styles.loading : ""}`}
             disabled={isLoading}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 24" xmlns="http://www.w3.org/2000/svg">
@@ -207,7 +207,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
           <span className={`${styles.headerTitle} responsive-text`}>
             Proposta de Cursos Comitê {getCurrentMonth()} / 2025
           </span>
-          <div className={styles.logoContainer} onClick={handleLogoClick} style={{ cursor: "'pointer'" }}>
+          <div className={styles.logoContainer} onClick={handleLogoClick} style={{ cursor: "pointer" }}>
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/uny_logo-pEYx6pRnSznZKeclaZApEzV7ztgHVq.png"
               alt="Unyleya Logo"
@@ -220,7 +220,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
         </div>
       </div>
 
-      {error && <p className={`${styles["'error-message'"]} responsive-text`}>{error}</p>}
+      {error && <p className={`${styles["error-message"]} responsive-text`}>{error}</p>}
 
       <Sidebar 
         courses={courses} 
@@ -244,7 +244,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
           {isDropdownOpen && (
             <motion.ul
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "'auto'" }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
               className={`${styles.courseDropdown} absolute w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto`}
@@ -272,40 +272,40 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
 
       {selectedCourse && (
         <motion.div 
-          className={`${styles["'info-container'"]} grid-responsive`}
+          className={`${styles["info-container"]} grid-responsive`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <motion.div 
-            className={`${styles["'info-box'"]} ${styles["'motion-box'"]} p-6`}
+            className={`${styles["info-box"]} ${styles["motion-box"]} p-6`}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <h3 className={`${styles.sectionHeader} ${styles.firstSectionHeader} responsive-subtitle`}>Nome do Curso</h3>
-            <p className={`${styles["'spaced-paragraph'"]} responsive-text`} id="courseName"></p>
+            <p className={`${styles["spaced-paragraph"]} responsive-text`} id="courseName"></p>
             <h3 className={`${styles.sectionHeader} responsive-subtitle`}>Apresentação</h3>
-            <p className={`${styles["'spaced-paragraph'"]} responsive-text`} id="courseApresentacao"></p>
+            <p className={`${styles["spaced-paragraph"]} responsive-text`} id="courseApresentacao"></p>
             {courses[selectedCourse]?.videoUrl && (
               <div className="mt-4">
                 <VideoPlayer videoUrl={courses[selectedCourse].videoUrl} />
               </div>
             )}
             <h3 className={`${styles.sectionHeader} responsive-subtitle`}>Minibios dos Coordenadores</h3>
-            <div id="coordenadorMinibios" className={`${styles["'spaced-paragraph'"]} responsive-text`}></div>
+            <div id="coordenadorMinibios" className={`${styles["spaced-paragraph"]} responsive-text`}></div>
             <h3 className={`${styles.sectionHeader} responsive-subtitle`}>Concorrentes</h3>
-            <ul className={`${styles["'spaced-paragraph'"]} responsive-text`} id="courseConcorrentes"></ul>
+            <ul className={`${styles["spaced-paragraph"]} responsive-text`} id="courseConcorrentes"></ul>
           </motion.div>
 
           <motion.div 
-            className={`${styles["'info-box'"]} ${styles["'motion-box'"]} p-6`}
+            className={`${styles["info-box"]} ${styles["motion-box"]} p-6`}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <h3 className={`${styles.sectionHeader} ${styles.firstSectionHeader} responsive-subtitle`}>Público-Alvo</h3>
-            <p id="coursePublico" className={`${styles["'spaced-paragraph'"]} responsive-text`}></p>
+            <p id="coursePublico" className={`${styles["spaced-paragraph"]} responsive-text`}></p>
 
             <h3 className={`${styles.sectionHeader} responsive-subtitle`}>Disciplinas</h3>
             <div className="overflow-x-auto">

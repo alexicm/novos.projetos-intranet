@@ -1,22 +1,22 @@
-"'use client'"
+"use client"
 
-import { useState, useEffect } from "'react'"
-import Image from "'next/image'"
-import { motion } from "'framer-motion'"
-import { useRouter } from "'next/navigation'"
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 interface LandingPageProps {
   onExploreClick: () => void
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ onExploreClick }) => {
-  const [currentMonth, setCurrentMonth] = useState("''")
+  const [currentMonth, setCurrentMonth] = useState("")
   // Remove this line: const router = useRouter()
 
   useEffect(() => {
     const months = [
-      "'Janeiro'", "'Fevereiro'", "'Março'", "'Abril'", "'Maio'", "'Junho'",
-      "'Julho'", "'Agosto'", "'Setembro'", "'Outubro'", "'Novembro'", "'Dezembro'"
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ]
     setCurrentMonth(months[new Date().getMonth()])
   }, [])

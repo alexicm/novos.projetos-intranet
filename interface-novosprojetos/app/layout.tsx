@@ -1,10 +1,10 @@
-import "'./globals.css'"
-import { Inter } from "'next/font/google'"
+import "./globals.css"
+import { Inter } from "next/font/google"
 
-const inter = Inter({ subsets: ["'latin'"] })
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "'Proposta de Cursos | Unyleya'",
+  title: "Proposta de Cursos | Unyleya",
   description: "'Interface de apresentação proposta cursos para o Comitê 2025'",
 }
 

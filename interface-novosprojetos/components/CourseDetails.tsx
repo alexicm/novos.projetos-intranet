@@ -1,8 +1,8 @@
-"'use client'"
+"use client"
 
-import { useState, useEffect } from "'react'"
-import { Course } from "'@/lib/types'"
-import { courses } from "'@/lib/courseData'"
+import { useState, useEffect } from "react"
+import { Course } from "@/lib/types"
+import { courses } from "@/lib/courseData"
 
 export default function CourseDetails() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
@@ -13,11 +13,11 @@ export default function CourseDetails() {
       setSelectedCourse(courses[courseKey] || null)
     }
 
-    const selector = document.getElementById("'courseSelector'")
-    selector?.addEventListener("'change'", handleCourseChange)
+    const selector = document.getElementById("courseSelector")
+    selector?.addEventListener("change", handleCourseChange)
 
     return () => {
-      selector?.removeEventListener("'change'", handleCourseChange)
+      selector?.removeEventListener("change", handleCourseChange)
     }
   }, [])
 
@@ -33,7 +33,7 @@ export default function CourseDetails() {
         <ul className="mt-2 space-y-1">
           {selectedCourse.coordenadores.map((coordenador, index) => (
             <li key={index}>
-              {coordenador.nome} -{"'"}
+              {coordenador.nome} -{""}
               <a href={coordenador.lattes} target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:text-orange-800">
                 Currículo Lattes
               </a>

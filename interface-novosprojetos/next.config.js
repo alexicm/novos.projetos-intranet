@@ -4,8 +4,8 @@ const nextConfig = {
     domains: ["'hebbkx1anhila5yf.public.blob.vercel-storage.com'"],
     remotePatterns: [
       {
-        protocol: "'https'",
-        hostname: "'**.public.blob.vercel-storage.com'",
+        protocol: "https",
+        hostname: "**.public.blob.vercel-storage.com",
       },
     ],
   },

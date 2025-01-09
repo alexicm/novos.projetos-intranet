@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import VideoPlayer from "@/components/VideoPlayer/VideoPlayer"
+import VideoPlayer from "@/components/VideoPlayer"
 import PerformanceImage from "@/components/PerformanceImage"
 import Sidebar from "@/components/Sidebar"
 import styles from "@/styles/Home.module.css"

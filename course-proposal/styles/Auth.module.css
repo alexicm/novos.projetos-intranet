@@ -1,0 +1,220 @@
+.section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background: url('https://i.ibb.co/0Jh2vQH/4.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 0;
+}
+
+.loginBox {
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logoContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  width: auto;
+  height: auto;
+  max-width: 150px;
+  object-fit: contain;
+}
+
+.loginBox h2 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.errorMessage {
+  color: #ff4d4f;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.successMessage {
+  color: #52c41a;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.inputBox {
+  position: relative;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.inputBox input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 1rem;
+  color: #ffffff;
+  border: none;
+  border-bottom: 2px solid #ffffff;
+  outline: none;
+  background: transparent;
+  transition: 0.3s;
+}
+
+.inputBox label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 1rem;
+  color: #ffffff;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+.inputBox input:focus ~ label,
+.inputBox input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #b3b3b3;
+  font-size: 0.75rem;
+}
+
+.inputBox input:focus,
+.inputBox input:valid {
+  border-bottom: 2px solid #FFD700;
+}
+
+.rememberMe {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
+}
+
+.rememberMe label {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.rememberMe input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.rememberMe span {
+  font-size: 0.9rem;
+}
+
+.loginBox button {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000000;
+  background: #FFD700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.loginBox button:hover {
+  background: #FFC800;
+  transform: translateY(-2px);
+}
+
+.loginBox button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+  .loginBox {
+    padding: 1.5rem;
+    width: 95%;
+  }
+
+  .loginBox h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .inputBox {
+    margin-bottom: 1.5rem;
+  }
+
+  .inputBox input {
+    font-size: 0.9rem;
+  }
+
+  .inputBox label {
+    font-size: 0.9rem;
+  }
+
+  .rememberMe {
+    margin-bottom: 1.5rem;
+  }
+
+  .rememberMe span {
+    font-size: 0.8rem;
+  }
+
+  .loginBox button {
+    font-size: 0.9rem;
+    padding: 8px 0;
+  }
+
+  .registerLink p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .loginBox {
+    padding: 1rem;
+  }
+
+  .loginBox h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+}
+

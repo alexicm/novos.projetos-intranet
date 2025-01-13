@@ -6,12 +6,12 @@ import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 
 interface LandingPageProps {
-  onExploreClick: () => void
+  onLogout: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onExploreClick }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onLogout }) => {
   const [currentMonth, setCurrentMonth] = useState("")
-  // Remove this line: const router = useRouter()
+  const router = useRouter()
 
   useEffect(() => {
     const months = [
@@ -21,8 +21,21 @@ const LandingPage: React.FC<LandingPageProps> = ({ onExploreClick }) => {
     setCurrentMonth(months[new Date().getMonth()])
   }, [])
 
+  const handleExploreClick = () => {
+    router.push("/course-proposal")
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-400 to-pink-600 flex flex-col justify-center items-center p-4">
+      <div className="absolute top-4 right-8">
+        <button
+          onClick={onLogout}
+          className="px-4 py-2 bg-white text-orange-500 rounded-full text-sm font-semibold hover:bg-orange-100 transition duration-300"
+        >
+          Sair
+        </button>
+      </div>
+      
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -63,7 +76,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onExploreClick }) => {
             icon="📚"
             title="Comitê Unyleya"
             description="Veja as propostas de cursos para o próximo comitê"
-            link="/course-proposal"
+            onClick={handleExploreClick}
           />
           <FeatureCard
             icon="🌟"
@@ -87,7 +100,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onExploreClick }) => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className="mt-12 px-8 py-4 bg-white text-orange-500 rounded-full text-xl font-bold shadow-lg hover:bg-orange-100 transition duration-300"
-        onClick={onExploreClick}
+        onClick={handleExploreClick}
       >
         Explorar Propostas
       </motion.button>
@@ -95,13 +108,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onExploreClick }) => {
   )
 }
 
-const FeatureCard = ({ icon, title, description, link }: {icon: string, title: string, description: string, link?: string}) => {
-  const router = useRouter()
+const FeatureCard = ({ icon, title, description, onClick }: {
+  icon: string;
+  title: string;
+  description: string;
+  onClick?: () => void;
+}) => {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
       className="bg-orange-50 rounded-lg p-6 shadow-md cursor-pointer"
-      onClick={() => link && router.push(link)}
+      onClick={onClick}
     >
       <div className="text-4xl mb-4">{icon}</div>
       <h4 className="text-xl font-semibold text-gray-800 mb-2">{title}</h4>

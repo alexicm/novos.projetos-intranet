@@ -1,30 +1,26 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import LoginPage from "@/components/LoginPage"
 import LandingPage from "@/components/LandingPage"
-import CourseProposalPage from "@/components/CourseProposalPage"
 
 export default function Home() {
-  const [showLanding, setShowLanding] = useState(true)
-  const router = useRouter()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  const handleExploreClick = () => {
-    setShowLanding(false)
-    router.push("/course-proposal")
+  const handleLogin = () => {
+    setIsLoggedIn(true)
   }
 
-  const returnToLanding = () => {
-    setShowLanding(true)
-    router.push("/")
+  const handleLogout = () => {
+    setIsLoggedIn(false)
   }
 
   return (
     <>
-      {showLanding ? (
-        <LandingPage onExploreClick={handleExploreClick} />
+      {!isLoggedIn ? (
+        <LoginPage onLogin={handleLogin} />
       ) : (
-        <CourseProposalPage onReturnToLanding={returnToLanding} />
+        <LandingPage onLogout={handleLogout} />
       )}
     </>
   )

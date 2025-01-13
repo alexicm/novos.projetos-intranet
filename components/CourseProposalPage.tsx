@@ -8,12 +8,13 @@ import styles from "@/styles/Home.module.css"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { Course } from "@/lib/types"
+import { supabase } from '@/lib/supabaseClient'
 
 interface CourseProposalPageProps {
-  onReturnToLanding: () => void;
+  onLogout: () => void;
 }
 
-export default function CourseProposalPage({ onReturnToLanding }: CourseProposalPageProps) {
+export default function CourseProposalPage({ onLogout }: CourseProposalPageProps) {
   const [courses, setCourses] = useState<Record<string, Course>>({})
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -95,12 +96,10 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
       `<li class="responsive-text"><a href="${c.link}" target="_blank" rel="noopener noreferrer" class="${styles.link}">${c.nome}</a></li>`
     ).join(""));
 
-    // Update minibios
     const minibiosContainer = document.getElementById("coordenadorMinibios");
     if (minibiosContainer) {
       let minibiosContent = "";
       
-      // Add main coordinator first
       minibiosContent += `
         <div class="mb-4">
           <h4 class="font-bold">${course.coordenadorPrincipal} (Coordenador Principal/Solicitante)</h4>
@@ -108,7 +107,6 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
         </div>
       `;
 
-      // Add other coordinators
       course.outrosCoordenadores.forEach(coord => {
         minibiosContent += `
           <div class="mb-4">
@@ -121,7 +119,6 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
       minibiosContainer.innerHTML = minibiosContent;
     }
 
-    // Ensure video player is updated
     if (course.videoUrl) {
       const videoPlayerContainer = document.getElementById("videoPlayerContainer");
       if (videoPlayerContainer) {
@@ -166,7 +163,6 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
       if (!grouped[coordinator]) {
         grouped[coordinator] = [];
       }
-      // Only add the course once under its main coordinator
       if (!grouped[coordinator].some(existingCourse => existingCourse.key === key)) {
         grouped[coordinator].push({ key, nome: course.nome });
       }
@@ -187,7 +183,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
       className={`${styles.container} responsive-container`}
     >
       <div className={`${styles.headerBar} w-full`}>
-        <div className={`${styles.headerContent} responsive-container`}>
+        <div className={`${styles.headerContent} responsive-container flex items-center justify-between gap-6`}>
           <span className={`${styles.headerTitle} responsive-text`}>
             Proposta de Cursos Comitê {getCurrentMonth()} / 2025
           </span>
@@ -201,6 +197,7 @@ export default function CourseProposalPage({ onReturnToLanding }: CourseProposal
               className={styles.logoImage}
             />
           </div>
+          <button onClick={onLogout} className={`${styles.logoutButton} px-6`}>Sair</button>
         </div>
       </div>
 

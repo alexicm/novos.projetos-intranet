@@ -59,7 +59,8 @@
     "vaul": "^0.9.6",
     "zod": "^3.24.1",
     "framer-motion": "latest",
-    "@supabase/supabase-js": "latest"
+    "@supabase/supabase-js": "latest",
+    "emailjs-com": "^3.2.0"
   },
   "devDependencies": {
     "@types/node": "^22",

@@ -46,10 +46,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
         throw new Error(data.error || 'An error occurred during login')
       }
 
-      console.log('Login bem-sucedido:', data.user)
-
       onLogin()
-      router.push('https://novos-projetos-intranet.vercel.app/')
     } catch (error) {
       console.error('Erro detalhado durante o login:', error)
       if (error instanceof Error) {
@@ -101,15 +98,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-white">Senha</Label>
-                <a 
-                  href="/forgot-password"
-                  className="text-sm text-orange-300 hover:text-orange-400"
-                >
-                  Esqueceu sua senha?
-                </a>
-              </div>
+              <Label htmlFor="password" className="text-white">Senha</Label>
               <Input
                 id="password"
                 type="password"
@@ -118,15 +107,23 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
                 required
                 className="bg-[#181818] text-white border-gray-600"
               />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="remember" />
-              <label
-                htmlFor="remember"
-                className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Lembrar-me
-              </label>
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="remember" />
+                  <label
+                    htmlFor="remember"
+                    className="text-sm font-medium leading-none text-white peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Lembrar-me
+                  </label>
+                </div>
+                <a 
+                  href="/forgot-password"
+                  className="text-sm text-orange-300 hover:text-orange-400"
+                >
+                  Esqueceu sua senha?
+                </a>
+              </div>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

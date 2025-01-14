@@ -1,8 +1,8 @@
 import emailjs from 'emailjs-com';
 
-const USER_ID = 'qT-d1yqztpg34D_m3';
-const SERVICE_ID = 'service_0785y6d';
-const TEMPLATE_ID = 'template_z8okgvg';
+const USER_ID = process.env.NEXT_PUBLIC_EMAILJS_USER_ID;
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
 
 if (!USER_ID) {
   throw new Error('EMAILJS_USER_ID is not set in environment variables');

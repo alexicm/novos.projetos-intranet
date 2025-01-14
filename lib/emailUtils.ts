@@ -1,14 +1,11 @@
-import emailjs from 'emailjs-com';
-
 const USER_ID = process.env.NEXT_PUBLIC_EMAILJS_USER_ID;
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+const PRIVATE_ID = process.env.NEXT_PUBLIC_EMAILJS_PRIVATE_ID;
 
-if (!USER_ID) {
-  throw new Error('EMAILJS_USER_ID is not set in environment variables');
+if (!USER_ID || !SERVICE_ID || !TEMPLATE_ID || !PRIVATE_ID) {
+  throw new Error('Missing EmailJS environment variables');
 }
-
-emailjs.init(USER_ID);
 
 export async function sendConfirmationEmail(to: string, code: string): Promise<void> {
   const htmlContent = `
@@ -86,16 +83,36 @@ export async function sendConfirmationEmail(to: string, code: string): Promise<v
 `;
 
   const templateParams = {
-    to: to,
-    message: htmlContent,
-    subject: `Código de Confirmação ${code} - Redefinição de Senha`,
+    service_id: SERVICE_ID,
+    template_id: TEMPLATE_ID,
+    user_id: USER_ID,
+    accessToken: PRIVATE_ID,
+    template_params: {
+      to: to,
+      message: htmlContent,
+      subject: `Código de Confirmação ${code} - Redefinição de Senha`,
+    },
   };
 
   try {
-    const response = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
-    console.log('Email sent successfully!', response.status, response.text);
+    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(templateParams),
+    });
+
+    if (!response.ok) {
+      throw new Error(`EmailJS API error: ${response.status} ${response.statusText}`);
+    }
+    console.log(response.status, response.text)
+
+    const result = await response.text();
+    console.log('Email sent successfully!', result);
   } catch (error) {
     console.error('Failed to send email:', error);
+    console.log(response.status, response.text)
     throw new Error('Falha ao enviar o email de confirmação. Verifique os dados e tente novamente.');
   }
 }

@@ -30,8 +30,6 @@ export async function POST(request: Request) {
     // Generate a random 6-digit confirmation code
     const confirmationCode = Math.floor(100000 + Math.random() * 900000).toString()
 
-    console.log('Generated confirmation code:', confirmationCode)
-
     // Store the confirmation code in the database
     const { error: updateError } = await supabase
       .from('users')

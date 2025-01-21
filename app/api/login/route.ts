@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       .limit(1)
 
     if (!users) {
-      console.error("Usuário inválido"
+      console.error("Usuário inválido")
       return NextResponse.json({ error: "Invalid email or password"}, { status: 401})
     }
 

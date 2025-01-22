@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { ChevronDown, Check } from "@heroicons/react/solid" // Adjust imports based on your setup
+import { ChevronDownIcon, CheckIcon } from "@heroicons/react/24/solid"
 
 interface CourseStatusDropdownProps {
   courseId: string
@@ -24,17 +24,16 @@ export default function CourseStatusDropdown({ courseId, initialStatus, onStatus
 
   const handleStatusChange = async (newStatus: string) => {
     if (newStatus === status) {
-      setIsOpen(false) // Close the dropdown if the same status is selected
+      setIsOpen(false)
       return
     }
 
     setIsUpdating(true)
     try {
       await onStatusChange(newStatus)
-      setStatus(newStatus) // Update status only if successful
+      setStatus(newStatus)
     } catch (error) {
       console.error("Error updating status:", error)
-      // Optionally, handle the error (e.g., show a toast or error message)
     } finally {
       setIsUpdating(false)
       setIsOpen(false)
@@ -70,7 +69,7 @@ export default function CourseStatusDropdown({ courseId, initialStatus, onStatus
           disabled={isUpdating}
         >
           <span className="mr-2">{status ? getStatusLabel(status) : "Analisar"}</span>
-          <ChevronDown className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+          <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
         </button>
       </div>
 
@@ -87,7 +86,7 @@ export default function CourseStatusDropdown({ courseId, initialStatus, onStatus
                 onClick={() => handleStatusChange(option.value)}
               >
                 <span className="flex-grow text-left">{option.label}</span>
-                {status === option.value && <Check className="h-4 w-4 text-green-500 ml-2" />}
+                {status === option.value && <CheckIcon className="h-4 w-4 text-green-500 ml-2" />}
                 <span
                   className={`h-3 w-3 rounded-full ${getStatusColor(option.value)}`}
                   style={{ marginLeft: "2px" }}

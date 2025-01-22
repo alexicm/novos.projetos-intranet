@@ -34,26 +34,22 @@ const LandingPage: React.FC<LandingPageProps> = ({}) => {
   }
 
   useEffect(() => {
-    // Monitor page visibility changes
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        handleLogout()
-      }
-    }
-
     // Monitor tab/window close
-    const handleBeforeUnload = () => {
-      handleLogout()
-    }
-
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    window.addEventListener("beforeunload", handleBeforeUnload)
-
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      // Optional: Custom message for older browsers (ignored in modern browsers)
+      event.preventDefault();
+      handleLogout();
+    };
+  
+    // Add event listener for window close or refresh
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-      window.removeEventListener("beforeunload", handleBeforeUnload)
-    }
-  }, [])
+      // Cleanup the event listener
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-400 to-pink-600 flex flex-col justify-center items-center p-4">

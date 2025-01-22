@@ -294,27 +294,23 @@ export default function CourseProposalPage({ onLogout }: CourseProposalPageProps
   }
   
   useEffect(() => {
-    // Monitor page visibility changes
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        handleLogout()
-      }
-    }
-
     // Monitor tab/window close
-    const handleBeforeUnload = () => {
-      handleLogout()
-    }
-
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    window.addEventListener("beforeunload", handleBeforeUnload)
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-      window.removeEventListener("beforeunload", handleBeforeUnload)
-    }
-  }, [])
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      // Optional: Custom message for older browsers (ignored in modern browsers)
+      event.preventDefault();
+      handleLogout();
+    };
   
+    // Add event listener for window close or refresh
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
+    return () => {
+      // Cleanup the event listener
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

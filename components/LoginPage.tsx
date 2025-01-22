@@ -31,7 +31,7 @@ export default function LoginPage({}: LoginPageProps) {
     setIsLoading(true)
 
     const salt = await bcrypt.genSalt(10)
-    const password = await bcrypt.hash(password, salt)
+    password = await bcrypt.hash(password, salt)
 
     try {
       const response = await fetch("/api/login", {

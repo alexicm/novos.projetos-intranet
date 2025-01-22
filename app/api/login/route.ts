@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabaseClient"
-import { sign } from "jsonwebtoken"
-
-const JWT_SECRET = process.env.JWT_SECRET
-
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET is not set in the environment variables")
-}
+import { cookies } from "next/headers"
 
 export async function POST(request: Request) {
   try {
@@ -41,14 +35,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
-    // Generate JWT token
-    const token = sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1d" })
+    // Create a session token (simple hash of user data + timestamp)
+    const sessionToken = Buffer.from(`${user.id}:${user.email}:${Date.now()}`).toString("base64")
+
+    // Set the cookie
+    cookies().set("supabase-auth-token", sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24, // 24 hours
+    })
 
     return NextResponse.json(
       {
         success: true,
         user: { id: user.id, email: user.email },
-        token: token,
       },
       { status: 200 },
     )

@@ -83,9 +83,21 @@ export default function CourseProposalPage({ onLogout }: CourseProposalPageProps
       return
     }
 
-    updateCourseElement("courseName", course.nome)
-    updateCourseElement("courseApresentacao", course.apresentacao)
-    updateCourseElement("coursePublico", course.publico)
+    // Safely update DOM elements with null checks
+    const courseNameElement = document.getElementById("courseName")
+    if (courseNameElement) {
+      courseNameElement.innerHTML = course.nome || ""
+    }
+
+    const courseApresentacaoElement = document.getElementById("courseApresentacao")
+    if (courseApresentacaoElement) {
+      courseApresentacaoElement.innerHTML = course.apresentacao || ""
+    }
+
+    const coursePublicoElement = document.getElementById("coursePublico")
+    if (coursePublicoElement) {
+      coursePublicoElement.innerHTML = course.publico || ""
+    }
 
     let totalHoras = 0
     const disciplinas = (course.disciplinasIA || [])
@@ -185,9 +197,18 @@ export default function CourseProposalPage({ onLogout }: CourseProposalPageProps
 
   // Função para selecionar um curso da lista de busca
   const handleSelectCourse = (courseKey: string) => {
-    setSelectedCourse(courseKey)
-    setSearchTerm("")
-    setIsDropdownOpen(false)
+    try {
+      if (!courses[courseKey]) {
+        console.error("Invalid course selected:", courseKey)
+        return
+      }
+      setSelectedCourse(courseKey)
+      setSearchTerm("")
+      setIsDropdownOpen(false)
+    } catch (error) {
+      console.error("Error selecting course:", error)
+      setError("Error loading course details")
+    }
   }
 
   // Função para agrupar os cursos por coordenador

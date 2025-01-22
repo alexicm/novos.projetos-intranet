@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabaseClient"
 import { cookies } from "next/headers"
+import bcrypt from "bcryptjs"
 
 export async function POST(request: Request) {
   try {
@@ -30,7 +31,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "An error occurred during login" }, { status: 500 })
     }
 
-    if (user.password !== password) {
+    const passwordMatch = await bcrypt.compare(password, user.password)
+
+    if (!passwordMatch) {
       console.error("Credenciais inválidas")
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }

@@ -26,12 +26,12 @@ export async function POST(request: Request) {
 
     // Hash the new password
     const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(newPassword, salt)
+    const password = await bcrypt.hash(newPassword, salt)
 
     const { error: updateError } = await supabase
       .from("users")
       .update({
-        password: hashedPassword,
+        password: password,
         reset_code: null, // Clear the reset code after successful password change
       })
       .eq("email", email)

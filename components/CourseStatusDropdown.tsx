@@ -74,7 +74,7 @@ export default function CourseStatusDropdown({ courseId, initialStatus, onStatus
       </div>
 
       {isOpen && (
-        <div className="origin-top-right absolute left-0 sm:right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+        <div className="origin-top-right absolute left-0 sm:right-0 mt-2 w-35 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
           <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
             {statusOptions.map((option) => (
               <button

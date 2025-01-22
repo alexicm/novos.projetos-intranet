@@ -43,6 +43,9 @@ export default function LoginPage({}: LoginPageProps) {
         throw new Error(data.error || "An error occurred during login")
       }
 
+      // Set the auth token cookie
+      document.cookie = `auth_token=${data.token}; path=/; max-age=86400; secure; samesite=strict`
+
       router.push("/novos-projetos")
     } catch (error) {
       console.error("Erro detalhado durante o login:", error)

@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server"
 import { supabase } from "@/lib/supabaseClient"
+import { sign } from "jsonwebtoken"
+
+const JWT_SECRET = process.env.JWT_SECRET
+
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is not set in the environment variables")
+}
 
 export async function POST(request: Request) {
   try {
@@ -12,41 +19,39 @@ export async function POST(request: Request) {
     }
 
     const { data: users, error } = await supabase
-      .from('users')
-      .select('nome, email, password')
+      .from("users")
+      .select("id, nome, email, password")
       .eq("email", email)
       .limit(1)
 
-    if (!users) {
+    if (!users || users.length === 0) {
       console.error("Usuário inválido")
-      return NextResponse.json({ error: "Invalid email or password"}, { status: 401})
+      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
-    const user = users[0];
+    const user = users[0]
 
     if (error) {
-      console.error("Error:", error);
-    } else {
-      console.log("Users: ", user.nonme); // Pretty print the JSON
+      console.error("Error:", error)
+      return NextResponse.json({ error: "An error occurred during login" }, { status: 500 })
     }
 
     if (user.password !== password) {
-      console.error("Credenciais inválidas");
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+      console.error("Credenciais inválidas")
+      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
-    if (user.email !== email) {
-      console.error("Credenciais inválidas");
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-    }
+    // Generate JWT token
+    const token = sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1d" })
 
     return NextResponse.json(
       {
         success: true,
         user: { id: user.id, email: user.email },
+        token: token,
       },
-      { status: 200 }
-    );
+      { status: 200 },
+    )
   } catch (error) {
     console.error("Unexpected error:", error)
     return NextResponse.json({ error: "Erro inesperado" }, { status: 500 })

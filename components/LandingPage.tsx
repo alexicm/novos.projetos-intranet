@@ -10,6 +10,16 @@ type LandingPageProps = {}
 const LandingPage: React.FC<LandingPageProps> = ({}) => {
   const router = useRouter()
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const response = await fetch("/api/check-auth")
+      if (!response.ok) {
+        router.push("/login")
+      }
+    }
+    checkAuth()
+  }, [router])
+
   const handleExploreClick = () => {
     router.push("/course-proposal")
   }

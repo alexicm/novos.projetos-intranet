@@ -28,6 +28,16 @@ export default function CourseProposalPage({ onLogout }: CourseProposalPageProps
   const router = useRouter() // Hook do Next.js para navegação
   const searchInputRef = useRef<HTMLInputElement>(null) // Referência para o campo de pesquisa
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const response = await fetch("/api/check-auth")
+      if (!response.ok) {
+        router.push("/login")
+      }
+    }
+    checkAuth()
+  }, [router])
+  
   // Carrega os cursos assim que o componente é montado
   useEffect(() => {
     loadCourses()

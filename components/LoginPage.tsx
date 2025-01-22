@@ -29,13 +29,16 @@ export default function LoginPage({}: LoginPageProps) {
 
     setIsLoading(true)
 
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+
     try {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, hashedPassword }),
       })
 
       const data = await response.json()

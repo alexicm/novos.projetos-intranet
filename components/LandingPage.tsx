@@ -24,11 +24,42 @@ const LandingPage: React.FC<LandingPageProps> = ({}) => {
     router.push("/course-proposal")
   }
 
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", { method: "POST" })
+      router.push("/login")
+    } catch (error) {
+      console.error("Error logging out:", error)
+    }
+  }
+
+  useEffect(() => {
+    // Monitor page visibility changes
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        handleLogout()
+      }
+    }
+
+    // Monitor tab/window close
+    const handleBeforeUnload = () => {
+      handleLogout()
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-400 to-pink-600 flex flex-col justify-center items-center p-4">
       <div className="absolute top-4 right-8">
         <button
-          onClick={() => router.push("/login")}
+          onClick={handleLogout}
           className="px-4 py-2 bg-white text-orange-500 rounded-full text-sm font-semibold hover:bg-orange-100 transition duration-300"
         >
           Sair

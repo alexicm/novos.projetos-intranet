@@ -243,8 +243,13 @@ export default function CourseProposalPage({ onLogout }: CourseProposalPageProps
       course.coordenadorPrincipal.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-  const handleLogout = () => {
-    router.push("/login")
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", { method: "POST" })
+      router.push("/login")
+    } catch (error) {
+      console.error("Error logging out:", error)
+    }
   }
 
   const handleStatusChange = async (courseId: string, newStatus: string) => {
@@ -287,7 +292,29 @@ export default function CourseProposalPage({ onLogout }: CourseProposalPageProps
         return "bg-gray-200 text-gray-800"
     }
   }
+  
+  useEffect(() => {
+    // Monitor page visibility changes
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        handleLogout()
+      }
+    }
 
+    // Monitor tab/window close
+    const handleBeforeUnload = () => {
+      handleLogout()
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [])
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { ChevronDownIcon, CheckIcon } from "@heroicons/react/24/solid"
 
 interface CourseStatusDropdownProps {
@@ -68,7 +68,7 @@ export default function CourseStatusDropdown({ courseId, initialStatus, onStatus
           onClick={() => setIsOpen(!isOpen)}
           disabled={isUpdating}
         >
-          <span className="mr-2">{status ? getStatusLabel(status) : "Analisar"}</span>
+          Analisar
           <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
         </button>
       </div>

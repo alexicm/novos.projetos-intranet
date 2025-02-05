@@ -9,13 +9,14 @@ Welcome to the Unyleya Course Proposal Platform! This innovative web application
 
 ## 🌟 Features
 
-- 🔐 Secure user authentication
+- 🔐 Secure user authentication with password reset functionality
 - 📝 Course proposal submission and management
 - 🔍 Advanced search and filtering capabilities
 - 📊 Dynamic status updates for course proposals
 - 📹 Video integration for course presentations
 - 📈 Performance metrics visualization
 - 🌐 Responsive design for all devices
+- 🎨 Modern UI with animations using Framer Motion
 
 ## 🛠 Technologies Used
 
@@ -26,15 +27,7 @@ Welcome to the Unyleya Course Proposal Platform! This innovative web application
 - Framer Motion
 - Supabase
 - Pipefy API Integration
+- EmailJS for email notifications
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v14 or later)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
+## 📁 Project Structure
 

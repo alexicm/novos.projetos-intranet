@@ -1,12 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import LandingPage from "@/components/LandingPage"
-import CourseStatusDropdown from "@/components/CourseStatusDropdown"
 
 export default function LoginRoute() {
   const router = useRouter()
+  const [isDevMode, setIsDevMode] = useState(false)
+  const [courses, setCourses] = useState({}) // Added state for courses
+
+  useEffect(() => {
+    setIsDevMode(localStorage.getItem("DEVMODE") === "true")
+  }, [])
 
   const handleLogin = () => {
     router.push("/novos-projetos")
@@ -40,6 +45,6 @@ export default function LoginRoute() {
     }
   }
 
-  return <LandingPage onLogin={handleLogin} />
+  return <LandingPage onLogin={handleLogin} isDevMode={isDevMode} />
 }
 

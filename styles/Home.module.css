@@ -1,9 +1,9 @@
 .container {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1920px;
   margin: 0 auto;
   padding: clamp(0.75rem, 2vw, 1.5rem);
-  background: #ffffff;
+  background: var(--background-color, #ffffff);
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -80,16 +80,20 @@
 }
 
 .info-container {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: clamp(0.75rem, 1.5vw, 1.5rem);
 }
 
 .sectionHeader {
   color: #f95f00;
-  margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
-  margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
-  padding-bottom: clamp(0.25rem, 0.5vw, 0.5rem);
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
   border-bottom: 2px solid #f95f00;
+  background-color: var(--background-color-secondary, #f8f8f8);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .spaced-paragraph {
@@ -104,18 +108,21 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin-top: clamp(0.5rem, 1vw, 0.75rem);
-  background-color: #fff;
+  margin-top: 0.5rem;
+  background-color: var(--background-color, #fff);
   border-radius: 0.25rem;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .table th,
 .table td {
-  padding: clamp(0.4rem, 0.8vw, 0.6rem);
+  padding: 0.5rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color, #eee);
+  vertical-align: top;
 }
 
 .table th {
@@ -173,10 +180,27 @@
 }
 
 .info-box {
-  background-color: #f8f8f8;
+  background-color: var(--background-color-secondary, #f8f8f8);
   border-radius: 0.5rem;
-  padding: clamp(0.75rem, 1.5vw, 1.25rem);
+  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 6rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #f95f00 #f8f8f8;
+}
+
+.info-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.info-box::-webkit-scrollbar-track {
+  background: #f8f8f8;
+}
+
+.info-box::-webkit-scrollbar-thumb {
+  background-color: #f95f00;
+  border-radius: 3px;
 }
 
 .searchContainer {
@@ -232,6 +256,9 @@
   .info-container {
     grid-template-columns: 1fr;
   }
+  .table {
+    font-size: 0.9em;
+  }
 }
 
 .firstSectionHeader {
@@ -274,5 +301,17 @@
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
+}
+
+.responsive-text {
+  font-size: var(--font-size-base);
+}
+
+.responsive-title {
+  font-size: var(--font-size-xl);
+}
+
+.responsive-subtitle {
+  font-size: var(--font-size-lg);
 }
 

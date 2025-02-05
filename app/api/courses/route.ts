@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server"
 import type { Course, ApiResponse } from "@/lib/types"
+import config from "@/lib/config"
 
-const API_URL = "https://api.pipefy.com/graphql"
-
-// Using the environment variable
-const PIPEFY_API_KEY = process.env.PIPEFY_API_KEY
+const API_URL = config.pipefy.apiUrl
+const PIPEFY_API_KEY = config.pipefy.apiKey
 
 if (!PIPEFY_API_KEY) {
   console.error("PIPEFY_API_KEY environment variable is not set")
@@ -34,6 +33,28 @@ const query = `
 }
 `
 
+const selectedFields = [
+  "Nome do Curso",
+  "Coordenador MEC",
+  "Coordenador 1",
+  "Coordenador 2",
+  "Coordenador 3",
+  "Coordenador 4",
+  "Apresentação IA",
+  "Público Alvo IA",
+  "Concorrentes IA",
+  "Performance de Cursos / Área correlatas",
+  "Vídeo de Defesa da Proposta de Curso",
+  "Disciplinas IA",
+  "Minibio 1 IA",
+  "Minibio 2 IA",
+  "Minibio 3 IA",
+  "Minibio 4 IA",
+  "Minibio MEC IA",
+  "Status Pós-Comitê",
+  "Observações do comitê",
+]
+
 function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
   const courses: Record<string, Course> = {}
 
@@ -47,17 +68,22 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
     throw new Error("Invalid API response structure")
   }
 
-  apiResponse.data.phase.cards.edges.forEach((edge) => {
-    if (!edge.node || !edge.node.id || !edge.node.fields) {
+  const filteredFields = apiResponse.data.phase.cards.edges.map((edge) => ({
+    id: edge.node.id,
+    fields: edge.node.fields.filter((field) => selectedFields.includes(field.name)),
+  }))
+
+  filteredFields.forEach((edge) => {
+    if (!edge.id || !edge.fields) {
       console.error("Invalid edge structure:", JSON.stringify(edge))
       return
     }
 
-    const fields = edge.node.fields
+    const fields = edge.fields
     const course: Course = {
-      id: edge.node.id,
+      id: edge.id,
       nome: "",
-      coordenadorPrincipal: "",
+      coordenadorMEC: "",
       outrosCoordenadores: [],
       apresentacao: "",
       publico: "",
@@ -65,10 +91,13 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
       performance: "",
       videoUrl: "",
       disciplinasIA: [],
+      minibioMEC: "",
       minibiosCoordenadores: {},
-      status: "", // Added status property
+      status: "",
       observacoesComite: "",
+      data: {},
     }
+    course.data = edge
 
     fields.forEach((field) => {
       if (!field.name) {
@@ -76,19 +105,18 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
         return
       }
 
-      // Handle empty values
       const value = field.value || ""
 
       switch (field.name) {
         case "Nome do Curso":
           course.nome = value
           break
-        case "Coordenador Principal/Solicitante (Não altere)":
+        case "Coordenador MEC":
           try {
-            course.coordenadorPrincipal = JSON.parse(value)[0] || ""
+            course.coordenadorMEC = JSON.parse(value)[0] || ""
           } catch (error) {
-            console.error("Error parsing coordenadorPrincipal:", error)
-            course.coordenadorPrincipal = ""
+            console.error("Error parsing coordenadorMEC:", error)
+            course.coordenadorMEC = ""
           }
           break
         case "Coordenador 1":
@@ -103,24 +131,54 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
             }
           }
           break
-        case "Apresentação e Justificativa":
+        case "Apresentação IA":
           course.apresentacao = value
           break
-        case "Público Alvo":
+        case "Público Alvo IA":
           course.publico = value
           break
         case "Concorrentes IA":
           if (value) {
-            course.concorrentesIA = value.split("\n").map((c) => {
-              const [nome, curso, modalidade, link, valor] = c.split(" - ")
-              return {
-                nome,
-                curso,
-                modalidade: modalidade || "Modalidade desconhecida",
-                link,
-                valor: valor || "Valor desconhecido",
+            try {
+              let formattedValue = value.trim()
+              if (!formattedValue.startsWith("[") || !formattedValue.endsWith("]")) {
+                throw new Error("Invalid JSON format for Concorrentes IA")
               }
-            })
+              formattedValue = formattedValue.replace(/,\s*\n\s*]/, "]")
+              let parsedValue = JSON.parse(formattedValue)
+              if (typeof parsedValue === "string") {
+                parsedValue = JSON.parse(parsedValue)
+              }
+              if (Array.isArray(parsedValue)) {
+                course.concorrentesIA = parsedValue.map((item: string) => {
+                  const parts = item.split(";")
+                  if (parts.length < 4) {
+                    throw new Error(`Invalid item format: ${item}`)
+                  }
+                  const [instituicao, nomeCurso, modalidade, link, valor] = parts
+                  return {
+                    instituicao: instituicao.trim(),
+                    curso: `${nomeCurso.trim()} - ${modalidade.trim()}`,
+                    link: link.trim(),
+                    valor: valor ? valor.trim() : "Valor desconhecido",
+                  }
+                })
+              } else {
+                throw new Error("Parsed value is not an array")
+              }
+            } catch (error) {
+              console.error("Error parsing Concorrentes IA:", error)
+              course.concorrentesIA = [
+                {
+                  instituicao: "Erro ao processar",
+                  curso: "Erro ao processar",
+                  link: "#",
+                  valor: "Erro ao processar",
+                },
+              ]
+            }
+          } else {
+            course.concorrentesIA = []
           }
           break
         case "Performance de Cursos / Área correlatas":
@@ -151,25 +209,23 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
             })
           }
           break
-        case "Minibio do Coordenador 1":
-        case "Minibio do Coordenador 2":
-        case "Minibio do Coordenador 3":
-        case "Minibio do Coordenador 4":
-          const coordIndex = Number.parseInt(field.name.split(" ")[3]) - 1
+        case "Minibio 1 IA":
+        case "Minibio 2 IA":
+        case "Minibio 3 IA":
+        case "Minibio 4 IA":
+          const coordIndex = Number.parseInt(field.name.split(" ")[1]) - 1
           if (coordIndex >= 0 && coordIndex < course.outrosCoordenadores.length) {
             course.minibiosCoordenadores[course.outrosCoordenadores[coordIndex]] = value
           }
           break
-        case "Minibio do Coordenador Solicitante/Principal":
-          course.minibiosCoordenadores[course.coordenadorPrincipal] = value
+        case "Minibio MEC IA":
+          course.minibioMEC = value
           break
         case "Status Pós-Comitê":
           course.status = value
           break
         case "Observações do comitê":
           course.observacoesComite = value
-          break
-        default:
           break
       }
     })
@@ -183,8 +239,7 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
 export async function GET() {
   try {
     if (!PIPEFY_API_KEY) {
-      console.error("API key not configured")
-      return NextResponse.json({ error: "API key not configured" }, { status: 500 })
+      throw new Error("API key not configured")
     }
 
     console.log("Fetching data from Pipefy...")
@@ -195,8 +250,7 @@ export async function GET() {
     })
 
     if (!response.ok) {
-      console.error(`HTTP error! status: ${response.status}`)
-      return NextResponse.json({ error: `HTTP error! status: ${response.status}` }, { status: response.status })
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
 
     const data: ApiResponse = await response.json()

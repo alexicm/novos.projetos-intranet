@@ -1,116 +1,136 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
- 
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
- 
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
- 
+
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
- 
+
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
- 
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
- 
+
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
- 
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
- 
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
- 
+
     --radius: 0.5rem;
+    --font-size-base: clamp(1rem, 0.34vw + 0.91rem, 1.19rem);
+    --font-size-lg: clamp(1.2rem, 0.7vw + 1.2rem, 1.5rem);
+    --font-size-xl: clamp(2.44rem, 2.38vw + 1.85rem, 3.75rem);
   }
- 
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
- 
+
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
- 
+
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
- 
+
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
- 
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
- 
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
- 
+
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
- 
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
- 
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color: #555; /* Added from updates */
+  }
+  h1 {
+    font-size: var(--font-size-xl);
+  }
+  h2 {
+    font-size: var(--font-size-lg);
   }
 }
 
-/* Keep your existing responsive classes */
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+a {
+  color: #3291ff;
+}
+
+a:hover {
+  color: #0070f3;
+}
+
 .responsive-container {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: clamp(1rem, 2vw, 2rem);
 }
 
 .responsive-text {
-  font-size: clamp(0.75rem, 0.8vw + 0.4rem, 1rem);
+  font-size: clamp(0.875rem, 1vw + 0.5rem, 1.125rem);
 }
 
 .responsive-title {
-  font-size: clamp(1.25rem, 2vw + 0.75rem, 2.5rem);
+  font-size: clamp(1.5rem, 2.5vw + 1rem, 3rem);
 }
 
 .responsive-subtitle {
-  font-size: clamp(1rem, 1.5vw + 0.5rem, 2rem);
-}
-
-/* Your existing media queries */
-@media (max-width: 640px) {
-  :root {
-    --font-size-scale: 0.2vw;
-  }
+  font-size: clamp(1.25rem, 2vw + 0.75rem, 2.5rem);
 }
 
 @media (min-width: 1920px) {
   :root {
-    --font-size-scale: 0.5vw;
+    --font-size-base: 1.2rem;
+    --font-size-lg: 1.8rem;
+    --font-size-xl: 4rem;
   }
 }
 
-/* Your existing responsive classes */
 .grid-responsive {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
@@ -142,5 +162,73 @@
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+/* New utility classes for ExpandableSection and ZoomableText */
+.expandable-section {
+  transition: all 0.3s ease-in-out;
+}
+
+.expandable-section:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.zoomable-text {
+  transition: font-size 0.3s ease-in-out;
+}
+
+.zoom-button {
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.zoom-button:hover {
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #fff;
+    background-color: #1a1a1a;
+  }
+
+  a {
+    color: #3291ff;
+  }
+}
+
+@media screen and (min-width: 1280px) and (max-width: 7680px) {
+  /* Updated max-width from updates */
+  .responsive-container {
+    max-width: 90vw;
+  }
+
+  .responsive-text {
+    font-size: clamp(1rem, 1.5vw + 0.5rem, 1.5rem);
+  }
+
+  .responsive-title {
+    font-size: clamp(2rem, 3vw + 1rem, 4rem);
+  }
+
+  .responsive-subtitle {
+    font-size: clamp(1.5rem, 2.5vw + 0.75rem, 3rem);
+  }
+}
+
+/* Debug Popup styles */
+@keyframes debugPopupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.debug-popup {
+  animation: debugPopupFadeIn 0.3s ease-out;
 }
 

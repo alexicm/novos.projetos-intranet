@@ -1,22 +1,24 @@
 export interface Course {
   id: string
   nome: string
-  coordenadorPrincipal: string
+  coordenadorMEC: string
   outrosCoordenadores: string[]
   apresentacao: string
   publico: string
   concorrentesIA: Array<{
-    nome: string
+    instituicao: string
     curso: string
-    modalidade: string
     link: string
     valor: string
   }>
   performance: string
   videoUrl: string
   disciplinasIA: Array<{ nome: string; carga: number }>
+  minibioMEC: string
   minibiosCoordenadores: Record<string, string>
   status?: string
+  observacoesComite: string
+  data = {}
 }
 
 export interface ApiResponse {

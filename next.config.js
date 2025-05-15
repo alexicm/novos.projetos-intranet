@@ -47,6 +47,10 @@ const nextConfig = {
   },
   // Configuração para garantir que o Next.js gere corretamente as páginas estáticas
   output: "standalone",
+  // Add this line to fix the dependency conflict
+  experimental: {
+    legacyBrowsers: false,
+  },
 }
 
 module.exports = nextConfig

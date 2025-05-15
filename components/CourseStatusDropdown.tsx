@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { ChevronDownIcon, CheckIcon } from "@heroicons/react/24/solid"
 

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useCallback } from "react"
 import { ZoomIn, ZoomOut } from "lucide-react"
 

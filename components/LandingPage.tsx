@@ -1,10 +1,17 @@
 "use client"
+
+import { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import AddUserModal from "@/components/AddUserModal"
+import ManageUsersModal from "@/components/ManageUsersModal"
 
 export default function LandingPage() {
   const router = useRouter()
+  const [showAddUserModal, setShowAddUserModal] = useState(false)
+  const [showManageUsersModal, setShowManageUsersModal] = useState(false)
 
   const handleExploreClick = () => {
     router.push("/course-proposal")
@@ -39,7 +46,18 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-400 to-pink-600 flex flex-col">
       <header className="bg-gradient-to-r from-orange-500 to-pink-600 shadow-lg p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <h1 className="text-white text-xl font-bold">Unyleya</h1>
+          <Button
+            onClick={() => setShowAddUserModal(true)}
+            className="bg-white text-orange-500 hover:bg-orange-100 transition duration-300"
+          >
+            Adicionar usuário
+          </Button>
+          <Button
+            onClick={() => setShowManageUsersModal(true)}
+            className="bg-white text-pink-600 hover:bg-pink-100 transition duration-300"
+          >
+            Gerenciar usuários
+          </Button>
         </div>
       </header>
 
@@ -95,6 +113,9 @@ export default function LandingPage() {
           Explorar Propostas
         </motion.button>
       </div>
+
+      {showAddUserModal && <AddUserModal onClose={() => setShowAddUserModal(false)} />}
+      {showManageUsersModal && <ManageUsersModal onClose={() => setShowManageUsersModal(false)} />}
     </div>
   )
 }

@@ -17,16 +17,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Remover redirecionamentos que podem estar causando problemas
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: "/",
-  //       destination: "/novos-projetos",
-  //       permanent: true,
-  //     },
-  //   ]
-  // },
+  // Desabilitar a verificação de módulos não encontrados durante o build
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -45,8 +36,6 @@ const nextConfig = {
     NEXT_PUBLIC_EMAILJS_TEMPLATE_ID: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
     NEXT_PUBLIC_EMAILJS_PRIVATE_ID: process.env.NEXT_PUBLIC_EMAILJS_PRIVATE_ID,
   },
-  // Configuração para garantir que o Next.js gere corretamente as páginas estáticas
-  output: "standalone",
 }
 
 module.exports = nextConfig

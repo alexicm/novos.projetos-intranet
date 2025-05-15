@@ -42,4 +42,3 @@ const LoadingAnimation: React.FC = () => {
 }
 
 export default LoadingAnimation
-

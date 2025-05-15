@@ -30,4 +30,3 @@ Welcome to the Unyleya Course Proposal Platform! This innovative web application
 - EmailJS for email notifications
 
 ## 📁 Project Structure
-

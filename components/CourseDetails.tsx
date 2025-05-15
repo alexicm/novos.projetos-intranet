@@ -1,184 +1,194 @@
-import React, { useState } from "react"
+"use client"
+
+import React, { useMemo } from "react"
 import { motion } from "framer-motion"
 import styles from "@/styles/Home.module.css"
 import type { Course } from "@/lib/types"
 import VideoPlayer from "@/components/VideoPlayer/VideoPlayer"
 import PerformanceImage from "@/components/PerformanceImage"
-import { ZoomIn, ZoomOut } from "lucide-react"
+import ExpandableSection from "@/components/ExpandableSection"
+import { cn } from "@/lib/utils"
 
 interface CourseDetailsProps {
   course: Course
 }
 
 const CourseDetails: React.FC<CourseDetailsProps> = ({ course }) => {
-  const [fontSize, setFontSize] = useState(16)
+  const totalCargaHoraria = useMemo(() => {
+    return course.disciplinasIA.reduce((total, disciplina) => {
+      return total + (disciplina.carga || 0)
+    }, 0)
+  }, [course.disciplinasIA])
 
-  const handleZoomIn = () => {
-    setFontSize((prev) => Math.min(prev + 2, 32))
-  }
-
-  const handleZoomOut = () => {
-    setFontSize((prev) => Math.max(prev - 2, 12))
-  }
+  const coordenadores = course.coordenadores || []
 
   if (!course || typeof course !== "object") {
-    return <div>Erro: Dados do curso inválidos</div>
+    return (
+      <div role="alert" className="p-4 bg-red-100 text-red-700 rounded-md">
+        Erro: Dados do curso inválidos
+      </div>
+    )
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Global Zoom Controls */}
-      <div className="fixed top-20 right-4 flex gap-2 z-50 bg-white p-2 rounded-lg shadow-md">
-        <button
-          onClick={handleZoomOut}
-          className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-          aria-label="Decrease font size"
+    <div className="relative min-h-screen w-full">
+      <div className="container mx-auto py-4 px-2 sm:px-4 lg:px-6">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          <ZoomOut className="h-4 w-4" />
-        </button>
-        <button
-          onClick={handleZoomIn}
-          className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-          aria-label="Increase font size"
-        >
-          <ZoomIn className="h-4 w-4" />
-        </button>
-      </div>
+          {/* First Column */}
+          <motion.div
+            className={cn(styles["info-box"], "h-full")}
+            initial={{ x: -20 }}
+            animate={{ x: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <ExpandableSection title="Apresentação" showZoomControls>
+              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm mb-4">
+                <p className="text-base sm:text-lg leading-relaxed">{course.apresentacao}</p>
+              </div>
 
-      <motion.div
-        className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-2 flex-grow overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        style={{ fontSize: `${fontSize}px` }}
-      >
-        <motion.div className={`${styles["info-box"]} overflow-auto`}>
-          <div className={`${styles.sectionHeader} sticky top-0 z-10`}>Apresentação</div>
-          <div className="bg-white p-2 rounded-lg shadow-sm mb-4">
-            <p>{course.apresentacao}</p>
-          </div>
+              {course.videoUrl ? (
+                <div className="mb-4">
+                  <VideoPlayer videoUrl={course.videoUrl} />
+                </div>
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400 mb-4 text-center italic">
+                  Nenhum vídeo disponível para este curso.
+                </p>
+              )}
+            </ExpandableSection>
 
-          {course.videoUrl && (
-            <div className="mb-4">
-              <VideoPlayer videoUrl={course.videoUrl} />
-            </div>
-          )}
-
-          <div className={`${styles.sectionHeader} sticky top-0 z-10 mt-4`}>Concorrentes</div>
-          <div className="overflow-x-auto">
-            <table className={`${styles.table} w-full`}>
-              <thead>
-                <tr>
-                  <th>Instituição</th>
-                  <th>Curso</th>
-                  <th>Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array.isArray(course.concorrentesIA) && course.concorrentesIA.length > 0 ? (
-                  course.concorrentesIA.map((concorrente, index) => (
-                    <tr key={index}>
-                      <td>
-                        {concorrente.link ? (
-                          <a href={concorrente.link} target="_blank" rel="noopener noreferrer" className={styles.link}>
-                            {concorrente.instituicao}
-                          </a>
-                        ) : (
-                          concorrente.instituicao
-                        )}
-                      </td>
-                      <td>{concorrente.curso}</td>
-                      <td>{concorrente.valor || "Não informado"}</td>
+            <ExpandableSection title="Concorrentes" showZoomControls>
+              <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <table className={cn(styles.table, "w-full min-w-[600px] sm:min-w-full")}>
+                  <thead>
+                    <tr>
+                      <th className="w-1/3">Instituição</th>
+                      <th className="w-1/3">Curso</th>
+                      <th className="w-1/3">Valor</th>
                     </tr>
+                  </thead>
+                  <tbody>
+                    {Array.isArray(course.concorrentesIA) && course.concorrentesIA.length > 0 ? (
+                      course.concorrentesIA.map((concorrente, index) => (
+                        <tr key={index}>
+                          <td>
+                            {concorrente.link ? (
+                              <a
+                                href={concorrente.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={cn(
+                                  styles.link,
+                                  "hover:underline focus:outline-none focus:ring-2 focus:ring-orange-500",
+                                )}
+                              >
+                                {concorrente.instituicao}
+                              </a>
+                            ) : (
+                              concorrente.instituicao
+                            )}
+                          </td>
+                          <td>{concorrente.curso}</td>
+                          <td>{concorrente.valor || "Não informado"}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="text-center text-gray-500 dark:text-gray-400 py-4">
+                          Nenhum dado de concorrente disponível
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </ExpandableSection>
+          </motion.div>
+
+          {/* Second Column */}
+          <motion.div
+            className={cn(styles["info-box"], "h-full")}
+            initial={{ y: 20 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <ExpandableSection title="Coordenadores" showZoomControls>
+              <div className="space-y-6">
+                {coordenadores.length > 0 ? (
+                  coordenadores.map((coord, index) => (
+                    <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                      <h4 className="font-bold text-lg mb-2">
+                        {coord.nome} {coord.jaECoordenador ? "(Coordenador Unyleya)" : ""}
+                      </h4>
+                      <p className="text-base sm:text-lg leading-relaxed">
+                        {coord.minibiografia || "Minibiografia não disponível"}
+                      </p>
+                    </div>
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan={3} className="text-center">
-                      Nenhum dado de concorrente disponível
-                    </td>
-                  </tr>
+                  <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                    <p className="text-gray-500 dark:text-gray-400 text-center">
+                      Nenhum coordenador cadastrado para este curso.
+                    </p>
+                  </div>
                 )}
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
-
-        <motion.div className={`${styles["info-box"]} overflow-auto`}>
-          <div className={`${styles.sectionHeader} sticky top-0 z-10`}>Minibios dos Coordenadores</div>
-          <div className="bg-white p-2 rounded-lg shadow-sm mb-4">
-            <div className="mb-4">
-              <h4 className="font-bold">{course.coordenadorMEC} (Coordenador MEC)</h4>
-              <p>{course.minibioMEC || "Minibio não disponível"}</p>
-            </div>
-            {course.outrosCoordenadores.map((coord) => (
-              <div key={coord} className="mb-4">
-                <h4 className="font-bold">{coord}</h4>
-                <p>{course.minibiosCoordenadores[coord] || "Minibio não disponível"}</p>
               </div>
-            ))}
-          </div>
+            </ExpandableSection>
 
-          <div className={`${styles.sectionHeader} sticky top-0 z-10 mt-4`}>Público-Alvo</div>
-          <div className="bg-white p-2 rounded-lg shadow-sm">
-            <p>{course.publico}</p>
-          </div>
-        </motion.div>
+            <ExpandableSection title="Público-Alvo" showZoomControls>
+              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                <p className="text-base sm:text-lg leading-relaxed">{course.publico}</p>
+              </div>
+            </ExpandableSection>
+          </motion.div>
 
-        <motion.div className={`${styles["info-box"]} overflow-auto`}>
-          <div className={`${styles.sectionHeader} sticky top-0 z-10`}>Disciplinas</div>
-          <div className="overflow-x-auto">
-            <table className={`${styles.table} w-full`}>
-              <thead>
-                <tr>
-                  <th className="w-1/2">Disciplina</th>
-                  <th className="w-1/4">Carga Horária</th>
-                  <th className="w-1/4">Tipo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {course.disciplinasIA.map((disciplina, index) => {
-                  const nome = typeof disciplina === "object" ? disciplina.nome : disciplina
-                  const [disciplinaNome, cargaHoraria, tipo] = nome.split(";")
-                  return (
-                    <tr key={index}>
-                      <td className="break-words">{disciplinaNome}</td>
-                      <td>{cargaHoraria || "N/A"}</td>
-                      <td>{tipo || "N/A"}</td>
+          {/* Third Column */}
+          <motion.div
+            className={cn(styles["info-box"], "h-full")}
+            initial={{ x: 20 }}
+            animate={{ x: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <ExpandableSection title="Disciplinas" showZoomControls>
+              <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <table className={cn(styles.table, "w-full min-w-[600px] sm:min-w-full")}>
+                  <thead>
+                    <tr>
+                      <th className="w-3/4">Disciplina</th>
+                      <th className="w-1/4">Carga Horária</th>
                     </tr>
-                  )
-                })}
-                <tr>
-                  <td>
-                    <strong>Total</strong>
-                  </td>
-                  <td>
-                    <strong>
-                      {course.disciplinasIA.reduce((total, disciplina) => {
-                        const carga =
-                          typeof disciplina === "object"
-                            ? Number.parseInt(disciplina.nome.split(";")[1] || "0", 10)
-                            : Number.parseInt(disciplina.split(";")[1] || "0", 10)
-                        return total + (isNaN(carga) ? 0 : carga)
-                      }, 0)}
-                      H
-                    </strong>
-                  </td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody>
+                    {course.disciplinasIA.map((disciplina, index) => (
+                      <tr key={index}>
+                        <td className="break-words">{disciplina.nome}</td>
+                        <td>{disciplina.carga}h</td>
+                      </tr>
+                    ))}
+                    <tr className="font-bold">
+                      <td>Total</td>
+                      <td>{totalCargaHoraria}h</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ExpandableSection>
 
-          {course.performance && (
-            <>
-              <div className={`${styles.sectionHeader} sticky top-0 z-10 mt-4`}>Performance</div>
-              <PerformanceImage imageUrl={course.performance} />
-            </>
-          )}
+            {course.performance && (
+              <ExpandableSection title="Performance" showZoomControls>
+                <PerformanceImage imageUrl={course.performance} />
+              </ExpandableSection>
+            )}
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
     </div>
   )
 }
 
 export default React.memo(CourseDetails)
-

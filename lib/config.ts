@@ -17,4 +17,3 @@ console.log("Supabase URL:", config.supabaseUrl)
 console.log("Supabase Anon Key:", config.supabaseAnonKey ? "Set" : "Not set")
 
 export default config
-

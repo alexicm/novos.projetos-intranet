@@ -1,3 +1,7 @@
+"use client"
+
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -182,13 +186,13 @@ export default function ManageUsersModal({ onClose }: ManageUsersModalProps) {
                             handleDeleteUser(user.id)
                           }
                         }}
-                        className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left"
+                        className="block px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 w-full text-left rounded-t-md transition-colors duration-200"
                       >
                         Deletar
                       </Button>
                       <Button
                         onClick={() => handleEditUser(user)}
-                        className="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-100 w-full text-left transition-colors duration-200"
+                        className="block px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 w-full text-left rounded-b-md transition-colors duration-200"
                       >
                         Editar
                       </Button>
@@ -203,4 +207,3 @@ export default function ManageUsersModal({ onClose }: ManageUsersModalProps) {
     </div>
   )
 }
-

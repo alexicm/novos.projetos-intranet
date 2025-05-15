@@ -143,4 +143,3 @@ export default function AddUserModal({ onClose }: AddUserModalProps) {
     </div>
   )
 }
-

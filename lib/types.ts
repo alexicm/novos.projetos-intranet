@@ -1,8 +1,21 @@
+export interface User {
+  id: string
+  nome: string
+  email: string
+  permissao: number
+}
+
+export interface Coordinator {
+  nome: string
+  minibiografia: string
+  jaECoordenador: boolean
+}
+
 export interface Course {
   id: string
   nome: string
-  coordenadorMEC: string
-  outrosCoordenadores: string[]
+  coordenadorSolicitante: string
+  coordenadores: Coordinator[]
   apresentacao: string
   publico: string
   concorrentesIA: Array<{
@@ -14,11 +27,8 @@ export interface Course {
   performance: string
   videoUrl: string
   disciplinasIA: Array<{ nome: string; carga: number }>
-  minibioMEC: string
-  minibiosCoordenadores: Record<string, string>
   status?: string
   observacoesComite: string
-  data = {}
 }
 
 export interface ApiResponse {
@@ -30,7 +40,21 @@ export interface ApiResponse {
             id: string
             fields: Array<{
               name: string
-              value: string
+              native_value?: string
+              value?: string
+              field?: {
+                label: string
+                id: string
+              }
+            }>
+            child_relations: Array<{
+              __typename: string
+              cards: Array<{
+                fields: Array<{
+                  name: string
+                  value: string
+                }>
+              }>
             }>
           }
         }>
@@ -39,3 +63,8 @@ export interface ApiResponse {
   }
 }
 
+export interface AuthResponse {
+  success: boolean
+  user?: User
+  error?: string
+}

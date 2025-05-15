@@ -6,7 +6,6 @@ const API_URL = config.pipefy.apiUrl
 const PIPEFY_API_KEY = config.pipefy.apiKey
 
 if (!PIPEFY_API_KEY) {
-  console.error("PIPEFY_API_KEY environment variable is not set")
   throw new Error("PIPEFY_API_KEY environment variable is not set")
 }
 
@@ -24,7 +23,20 @@ const query = `
           id
           fields {
             name
-            value
+            native_value
+            field {
+              label
+              id
+            }
+          }
+          child_relations {
+            __typename
+            cards {
+              fields {
+                name
+                value
+              }
+            }
           }
         }
       }
@@ -32,28 +44,6 @@ const query = `
   }
 }
 `
-
-const selectedFields = [
-  "Nome do Curso",
-  "Coordenador MEC",
-  "Coordenador 1",
-  "Coordenador 2",
-  "Coordenador 3",
-  "Coordenador 4",
-  "Apresentação IA",
-  "Público Alvo IA",
-  "Concorrentes IA",
-  "Performance de Cursos / Área correlatas",
-  "Vídeo de Defesa da Proposta de Curso",
-  "Disciplinas IA",
-  "Minibio 1 IA",
-  "Minibio 2 IA",
-  "Minibio 3 IA",
-  "Minibio 4 IA",
-  "Minibio MEC IA",
-  "Status Pós-Comitê",
-  "Observações do comitê",
-]
 
 function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
   const courses: Record<string, Course> = {}
@@ -64,72 +54,57 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
     !apiResponse.data.phase.cards ||
     !apiResponse.data.phase.cards.edges
   ) {
-    console.error("Invalid API response structure:", JSON.stringify(apiResponse))
     throw new Error("Invalid API response structure")
   }
 
-  const filteredFields = apiResponse.data.phase.cards.edges.map((edge) => ({
-    id: edge.node.id,
-    fields: edge.node.fields.filter((field) => selectedFields.includes(field.name)),
-  }))
-
-  filteredFields.forEach((edge) => {
-    if (!edge.id || !edge.fields) {
+  apiResponse.data.phase.cards.edges.forEach((edge) => {
+    if (!edge.node.id || !edge.node.fields) {
       console.error("Invalid edge structure:", JSON.stringify(edge))
       return
     }
 
-    const fields = edge.fields
+    const fields = edge.node.fields
+    const childRelations = edge.node.child_relations || []
+
+    // Inicializa o objeto do curso
     const course: Course = {
-      id: edge.id,
+      id: edge.node.id,
       nome: "",
-      coordenadorMEC: "",
-      outrosCoordenadores: [],
+      coordenadorSolicitante: "Sem coordenador",
+      coordenadores: [],
       apresentacao: "",
       publico: "",
       concorrentesIA: [],
       performance: "",
       videoUrl: "",
       disciplinasIA: [],
-      minibioMEC: "",
-      minibiosCoordenadores: {},
       status: "",
       observacoesComite: "",
-      data: {},
     }
-    course.data = edge
 
+    // Processa os campos principais
     fields.forEach((field) => {
       if (!field.name) {
         console.error("Invalid field structure: missing name", JSON.stringify(field))
         return
       }
 
-      const value = field.value || ""
+      const value = field.native_value || ""
+
+      // Verifica se é um dos campos de coordenador solicitante
+      if (
+        field.name === "Pesquise seu nome aqui" ||
+        (field.field && field.field.id === "nome_completo") ||
+        field.name === "Nome Completo do Solicitante"
+      ) {
+        if (value && value.trim() !== "") {
+          course.coordenadorSolicitante = value
+        }
+      }
 
       switch (field.name) {
         case "Nome do Curso":
           course.nome = value
-          break
-        case "Coordenador MEC":
-          try {
-            course.coordenadorMEC = JSON.parse(value)[0] || ""
-          } catch (error) {
-            console.error("Error parsing coordenadorMEC:", error)
-            course.coordenadorMEC = ""
-          }
-          break
-        case "Coordenador 1":
-        case "Coordenador 2":
-        case "Coordenador 3":
-        case "Coordenador 4":
-          if (value) {
-            try {
-              course.outrosCoordenadores.push(...JSON.parse(value))
-            } catch (error) {
-              console.error(`Error parsing ${field.name}:`, error)
-            }
-          }
           break
         case "Apresentação IA":
           course.apresentacao = value
@@ -151,11 +126,7 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
               }
               if (Array.isArray(parsedValue)) {
                 course.concorrentesIA = parsedValue.map((item: string) => {
-                  const parts = item.split(";")
-                  if (parts.length < 4) {
-                    throw new Error(`Invalid item format: ${item}`)
-                  }
-                  const [instituicao, nomeCurso, modalidade, link, valor] = parts
+                  const [instituicao, nomeCurso, modalidade, link, valor] = item.split(";")
                   return {
                     instituicao: instituicao.trim(),
                     curso: `${nomeCurso.trim()} - ${modalidade.trim()}`,
@@ -177,49 +148,21 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
                 },
               ]
             }
-          } else {
-            course.concorrentesIA = []
           }
           break
         case "Performance de Cursos / Área correlatas":
-          if (value) {
-            try {
-              course.performance = JSON.parse(value)[0] || ""
-            } catch (error) {
-              console.error("Error parsing performance:", error)
-              course.performance = ""
-            }
-          }
+          course.performance = value
           break
         case "Vídeo de Defesa da Proposta de Curso":
-          if (value) {
-            try {
-              course.videoUrl = JSON.parse(value)[0] || ""
-            } catch (error) {
-              console.error("Error parsing videoUrl:", error)
-              course.videoUrl = ""
-            }
-          }
+          course.videoUrl = value
           break
         case "Disciplinas IA":
           if (value) {
             course.disciplinasIA = value.split("\n").map((d) => {
-              const [nome, carga] = d.split(" - ")
+              const [nome, carga] = d.split(";")
               return { nome, carga: Number.parseInt(carga) || 0 }
             })
           }
-          break
-        case "Minibio 1 IA":
-        case "Minibio 2 IA":
-        case "Minibio 3 IA":
-        case "Minibio 4 IA":
-          const coordIndex = Number.parseInt(field.name.split(" ")[1]) - 1
-          if (coordIndex >= 0 && coordIndex < course.outrosCoordenadores.length) {
-            course.minibiosCoordenadores[course.outrosCoordenadores[coordIndex]] = value
-          }
-          break
-        case "Minibio MEC IA":
-          course.minibioMEC = value
           break
         case "Status Pós-Comitê":
           course.status = value
@@ -227,6 +170,56 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
         case "Observações do comitê":
           course.observacoesComite = value
           break
+      }
+    })
+
+    // Primeiro, coletamos os nomes dos coordenadores dos campos principais
+    const coordenadorNomes: string[] = []
+    fields.forEach((field) => {
+      if (field.name.startsWith("Coordenador ") && field.native_value) {
+        coordenadorNomes.push(field.native_value)
+      }
+    })
+
+    // Agora, buscamos as informações detalhadas nos child_relations
+    const coordenadoresInfo: Record<string, { minibiografia: string; jaECoordenador: boolean }> = {}
+
+    childRelations.forEach((relation) => {
+      if (relation.cards && relation.cards.length > 0) {
+        const coordCard = relation.cards[0]
+        const coordFields = coordCard.fields
+
+        // Verifica se este é um card de coordenador
+        const nomeField = coordFields.find((f) => f.name === "Nome Completo")
+        if (!nomeField || !nomeField.value) return
+
+        const nome = nomeField.value
+        const minibiografia = coordFields.find((f) => f.name === "Minibiografia")?.value || ""
+        const jaECoordenador = coordFields.find((f) => f.name === "Já é coordenador da Unyleya?")?.value === "Sim"
+
+        // Armazena as informações do coordenador
+        coordenadoresInfo[nome] = {
+          minibiografia,
+          jaECoordenador,
+        }
+      }
+    })
+
+    // Finalmente, criamos a lista de coordenadores com as informações completas
+    coordenadorNomes.forEach((nome) => {
+      if (coordenadoresInfo[nome]) {
+        course.coordenadores.push({
+          nome,
+          minibiografia: coordenadoresInfo[nome].minibiografia,
+          jaECoordenador: coordenadoresInfo[nome].jaECoordenador,
+        })
+      } else {
+        // Se não encontrarmos informações detalhadas, adicionamos apenas o nome
+        course.coordenadores.push({
+          nome,
+          minibiografia: "",
+          jaECoordenador: false,
+        })
       }
     })
 
@@ -238,11 +231,6 @@ function parseApiResponse(apiResponse: ApiResponse): Record<string, Course> {
 
 export async function GET() {
   try {
-    if (!PIPEFY_API_KEY) {
-      throw new Error("API key not configured")
-    }
-
-    console.log("Fetching data from Pipefy...")
     const response = await fetch(API_URL, {
       method: "POST",
       headers: HEADERS,
@@ -254,13 +242,10 @@ export async function GET() {
     }
 
     const data: ApiResponse = await response.json()
-    console.log("Received data from Pipefy, parsing response...")
     const parsedCourses = parseApiResponse(data)
-    console.log(`Parsed ${Object.keys(parsedCourses).length} courses`)
     return NextResponse.json(parsedCourses)
   } catch (error) {
     console.error("Error fetching data from Pipefy:", error)
     return NextResponse.json({ error: "Failed to fetch courses" }, { status: 500 })
   }
 }
-

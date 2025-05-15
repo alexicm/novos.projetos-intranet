@@ -53,4 +53,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to update course status" }, { status: 500 })
   }
 }
-

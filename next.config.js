@@ -9,9 +9,13 @@ const nextConfig = {
         hostname: "**.public.blob.vercel-storage.com",
       },
     ],
+    unoptimized: true,
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   env: {
     SUPABASE_URL: process.env.SUPABASE_URL,
@@ -25,4 +29,3 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
-

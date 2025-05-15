@@ -19,4 +19,3 @@ const CenteredCourseName: React.FC<CenteredCourseNameProps> = ({ name }) => {
 }
 
 export default CenteredCourseName
-

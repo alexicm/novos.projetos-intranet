@@ -99,4 +99,3 @@ export default function CourseStatusDropdown({ courseId, initialStatus, onStatus
     </div>
   )
 }
-

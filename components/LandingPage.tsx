@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
@@ -8,14 +8,8 @@ import { Button } from "@/components/ui/button"
 import AddUserModal from "@/components/AddUserModal"
 import ManageUsersModal from "@/components/ManageUsersModal"
 
-type LandingPageProps = {
-  onLogin: () => void
-  isDevMode: boolean
-}
-
-const LandingPage: React.FC<LandingPageProps> = ({ onLogin, isDevMode }) => {
+export default function LandingPage() {
   const router = useRouter()
-  const [userPermission, setUserPermission] = useState<number>(0)
   const [showAddUserModal, setShowAddUserModal] = useState(false)
   const [showManageUsersModal, setShowManageUsersModal] = useState(false)
 
@@ -23,62 +17,48 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, isDevMode }) => {
     router.push("/course-proposal")
   }
 
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/logout", { method: "POST" })
-      router.push("/login")
-    } catch (error) {
-      console.error("Error logging out:", error)
-    }
-  }
-
-  useEffect(() => {
-    const fetchUserPermission = async () => {
-      try {
-        if (isDevMode) {
-          setUserPermission(2)
-        } else {
-          const response = await fetch("/api/user-permission")
-          if (response.ok) {
-            const data = await response.json()
-            setUserPermission(data.permission)
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching user permission:", error)
-      }
-    }
-
-    fetchUserPermission()
-  }, [])
+  const items = [
+    {
+      icon: "📚",
+      title: "Comitê Unyleya",
+      description: "Veja as propostas de cursos para o próximo comitê",
+      onClick: handleExploreClick,
+    },
+    {
+      icon: "📋",
+      title: "Meus Cursos",
+      description: "Acesse os cursos sob sua coordenação",
+      onClick: () => router.push("/coordinator-courses"),
+    },
+    {
+      icon: "🌟",
+      title: "Excelência Acadêmica",
+      description: "Aprenda com os melhores especialistas e pesquisadores em suas áreas.",
+    },
+    {
+      icon: "🚀",
+      title: "Desenvolvimento de Carreira",
+      description: "Impulsione sua carreira com cursos alinhados às demandas da indústria.",
+    },
+  ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-400 to-pink-600 flex flex-col">
       <header className="bg-gradient-to-r from-orange-500 to-pink-600 shadow-lg p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          {(userPermission === 2 || isDevMode) && (
-            <>
-              <Button
-                onClick={() => setShowAddUserModal(true)}
-                className="bg-white text-orange-500 hover:bg-orange-100 transition duration-300"
-              >
-                Adicionar usuário
-              </Button>
-              <Button
-                onClick={() => setShowManageUsersModal(true)}
-                className="bg-white text-pink-600 hover:bg-pink-100 transition duration-300"
-              >
-                Gerenciar usuários
-              </Button>
-            </>
-          )}
+          <Button
+            onClick={() => setShowAddUserModal(true)}
+            className="bg-white text-orange-500 hover:bg-orange-100 transition duration-300"
+          >
+            Adicionar usuário
+          </Button>
+          <Button
+            onClick={() => setShowManageUsersModal(true)}
+            className="bg-white text-pink-600 hover:bg-pink-100 transition duration-300"
+          >
+            Gerenciar usuários
+          </Button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-white text-orange-500 rounded-full text-sm font-semibold hover:bg-orange-100 transition duration-300"
-        >
-          Sair
-        </button>
       </header>
 
       <div className="flex-grow flex flex-col justify-center items-center p-4">
@@ -112,27 +92,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin, isDevMode }) => {
             Explore o futuro da educação com nossas propostas inovadoras de cursos.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FeatureCard
-              icon="📚"
-              title="Comitê Unyleya"
-              description="Veja as propostas de cursos para o próximo comitê"
-              onClick={handleExploreClick}
-            />
-            <FeatureCard
-              icon="🌟"
-              title="Excelência Acadêmica"
-              description="Aprenda com os melhores especialistas e pesquisadores em suas áreas."
-            />
-            <FeatureCard
-              icon="🚀"
-              title="Desenvolvimento de Carreira"
-              description="Impulsione sua carreira com cursos alinhados às demandas da indústria."
-            />
-            <FeatureCard
-              icon="🌐"
-              title="Aprendizado Flexível"
-              description="Estude no seu ritmo com nossa plataforma de ensino adaptativa."
-            />
+            {items.map((item, index) => (
+              <FeatureCard
+                key={index}
+                icon={item.icon}
+                title={item.title}
+                description={item.description}
+                onClick={item.onClick}
+              />
+            ))}
           </div>
         </motion.div>
 
@@ -175,6 +143,3 @@ const FeatureCard = ({
     </motion.div>
   )
 }
-
-export default LandingPage
-

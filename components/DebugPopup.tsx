@@ -35,4 +35,3 @@ const DebugPopup: React.FC<DebugPopupProps> = ({ courses, onClose }) => {
 }
 
 export default DebugPopup
-

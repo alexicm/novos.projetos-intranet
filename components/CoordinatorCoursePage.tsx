@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import LoadingAnimation from "@/components/LoadingAnimation"
 
 export default function CoordinatorCoursePage() {
   const router = useRouter()
@@ -19,8 +18,6 @@ export default function CoordinatorCoursePage() {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-background"
     >
-      {isLoading && <LoadingAnimation />}
-
       {/* Header */}
       <header className="bg-gradient-to-r from-orange-500 to-pink-600 shadow-lg p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -46,7 +43,6 @@ export default function CoordinatorCoursePage() {
       <main className="max-w-7xl mx-auto p-6">
         <h1 className="text-4xl font-bold text-center text-orange-500 mb-8">Meus Cursos</h1>
         <div className="grid gap-6">
-          {/* Search and course list will be added here */}
           <p className="text-center text-gray-500">Em desenvolvimento...</p>
         </div>
       </main>

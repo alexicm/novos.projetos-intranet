@@ -17,8 +17,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Desabilitar a verificação de módulos não encontrados durante o build
   webpack: (config) => {
-    // Adiciona fallbacks para módulos que podem estar faltando
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,

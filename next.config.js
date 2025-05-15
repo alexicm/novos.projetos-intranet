@@ -17,7 +17,16 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Desabilitar a verificação de módulos não encontrados durante o build
+  // Adicionar redirecionamentos
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/novos-projetos",
+        permanent: true,
+      },
+    ]
+  },
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
